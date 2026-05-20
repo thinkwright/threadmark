@@ -280,7 +280,7 @@ The daemon writes frontmatter fields such as:
 
 The reflector writes the body. The body is intentionally first-person because it is meant to preserve working perspective: what the agent was trying to do, what mattered, what was brittle, and what the next session should know first.
 
-If a checkpoint has no useful continuity value, the reflector prompt asks for stable marker phrases such as "nothing to hand off" or "plumbing artifact." Startup surfacing can then omit those entries without adding semantic retrieval.
+If a checkpoint has no useful continuity value, the reflector prompt asks for stable marker phrases such as "nothing to hand off" or "plumbing artifact." Startup surfacing can then omit those entries without adding semantic retrieval. If every recent entry has a low-signal marker, Threadmark still includes the most recent entry rather than sending an empty handoff.
 
 ## 11. SessionStart Produces a Startup Packet
 

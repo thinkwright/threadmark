@@ -565,6 +565,19 @@ func selectSessionEntries(entries []string, limit int) ([]string, int) {
 		}
 		selected = append(selected, entry)
 	}
+	if len(selected) == 0 {
+		for i := len(entries) - 1; i >= 0; i-- {
+			entry := strings.TrimSpace(entries[i])
+			if entry == "" {
+				continue
+			}
+			selected = append(selected, entry)
+			if skipped > 0 {
+				skipped--
+			}
+			break
+		}
+	}
 	return selected, skipped
 }
 

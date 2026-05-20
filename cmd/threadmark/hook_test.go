@@ -417,6 +417,30 @@ func TestHookClaudeCodeSkipsDuringReflectorSubprocess(t *testing.T) {
 	}
 }
 
+func TestSessionContextFallsBackWhenAllEntriesLookLowSignal(t *testing.T) {
+	workingDir := t.TempDir()
+	root := filepath.Join(t.TempDir(), ".threadmark")
+	writeTestJournalEntryWithBody(t, root, workingDir, "First plumbing artifact", "This entry is a plumbing artifact. There is nothing to hand off.")
+	writeTestJournalEntryWithBody(t, root, workingDir, "Latest plumbing artifact", "This entry is also a plumbing artifact. There is nothing to hand off.")
+
+	contextText, err := sessionContext(root, workingDir, 1, 2)
+	if err != nil {
+		t.Fatalf("sessionContext returned error: %v", err)
+	}
+	for _, want := range []string{
+		"Selected 1 of 2 recent journal entries; omitted 1 obvious low-signal/no-op entries.",
+		"Latest plumbing artifact",
+		"nothing to hand off",
+	} {
+		if !strings.Contains(contextText, want) {
+			t.Fatalf("context missing %q:\n%s", want, contextText)
+		}
+	}
+	if strings.Contains(contextText, "First plumbing artifact") {
+		t.Fatalf("context included older low-signal fallback entry:\n%s", contextText)
+	}
+}
+
 func startTestIPCServer(t *testing.T, socketPath string, want int) <-chan core.Event {
 	t.Helper()
 	received := make(chan core.Event, want)
