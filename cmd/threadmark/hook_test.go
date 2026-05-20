@@ -428,7 +428,7 @@ func TestSessionContextFallsBackWhenAllEntriesLookLowSignal(t *testing.T) {
 		t.Fatalf("sessionContext returned error: %v", err)
 	}
 	for _, want := range []string{
-		"Selected 1 of 2 recent journal entries; omitted 1 obvious low-signal/no-op entries.",
+		"Selected 1 low-signal fallback entry from 2 recent journal entries because no high-signal entries were available; omitted 1 obvious low-signal/no-op entries. Treat the fallback as a note about absent or low-value handoff context, not as primary project context.",
 		"Latest plumbing artifact",
 		"nothing to hand off",
 	} {

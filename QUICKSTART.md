@@ -222,7 +222,7 @@ Start by checking the current daemon mode before changing code.
 
 The Workspace Snapshot is factual local context. The Project Card is durable project-authored context. Journal entries are perspective, not truth. They are meant to orient the arriving agent, not replace git history, tests, or project docs.
 
-Threadmark scans a recent window of entries and omits entries that explicitly label themselves as low-signal, such as "nothing to hand off" or "plumbing artifact." This filter is conservative: if every recent entry looks low-signal, Threadmark still includes the most recent one so a new session does not receive an empty handoff. It does not perform semantic retrieval or ranking.
+Threadmark scans a recent window of entries and omits entries that explicitly label themselves as low-signal, such as "nothing to hand off" or "plumbing artifact." This filter is conservative: if every recent entry looks low-signal, Threadmark still includes the most recent one as a labeled fallback so a new session can see why there is no strong handoff. It does not perform semantic retrieval or ranking.
 
 ## Read the Journal
 

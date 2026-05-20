@@ -23,7 +23,7 @@ import (
 	"github.com/thinkwright/threadmark/internal/reflector"
 )
 
-const sessionContextPreamble = "Threadmark startup packet: current workspace facts plus selected *perspectival journal entries* from previous sessions on this project. Journal entries reflect what past Threadmark reflectors thought mattered at the time, not factual ground truth. They may be incomplete, biased, stale, or wrong. Use the packet as orientation, not as authority; verify against git history, current code, tests, and durable project docs when correctness matters."
+const sessionContextPreamble = "Threadmark startup packet: current workspace facts plus selected *perspectival journal entries* from previous sessions on this project. Journal entries reflect what past Threadmark reflectors thought mattered at the time, not factual ground truth. They may be incomplete, biased, stale, or wrong. Account for what this packet says before consulting other sources: if it contains a live handoff, use it for orientation; if it contains only low-signal or no-handoff context, say that briefly. Verify against git history, current code, tests, and durable project docs when correctness matters."
 
 const (
 	projectCardEnv      = "THREADMARK_PROJECT_CARD"
@@ -342,8 +342,8 @@ func sessionContext(root, cwd string, n, scan int) (string, error) {
 		return "", err
 	}
 
-	selected, skipped := selectSessionEntries(entries, n)
-	if snapshot == "" && card == "" && len(selected) == 0 {
+	selection := selectSessionEntries(entries, n)
+	if snapshot == "" && card == "" && len(selection.Entries) == 0 {
 		return "", nil
 	}
 
@@ -360,19 +360,27 @@ func sessionContext(root, cwd string, n, scan int) (string, error) {
 	}
 	if len(entries) == 0 {
 		b.WriteString("No Threadmark journal entries found for this project yet.")
-	} else if len(selected) == 0 {
+	} else if len(selection.Entries) == 0 {
 		fmt.Fprintf(&b, "Selected 0 of %d recent journal entries", len(entries))
-		if skipped > 0 {
-			fmt.Fprintf(&b, "; omitted %d obvious low-signal/no-op entries", skipped)
+		if selection.Skipped > 0 {
+			fmt.Fprintf(&b, "; omitted %d obvious low-signal/no-op entries", selection.Skipped)
 		}
 		b.WriteString(".")
 	} else {
-		fmt.Fprintf(&b, "Selected %d of %d recent journal entries", len(selected), len(entries))
-		if skipped > 0 {
-			fmt.Fprintf(&b, "; omitted %d obvious low-signal/no-op entries", skipped)
+		if selection.FallbackLowSignal {
+			fmt.Fprintf(&b, "Selected 1 low-signal fallback entry from %d recent journal entries because no high-signal entries were available", len(entries))
+		} else {
+			fmt.Fprintf(&b, "Selected %d of %d recent journal entries", len(selection.Entries), len(entries))
 		}
-		b.WriteString(". Most recent selected entry is first.")
-		for i, entry := range selected {
+		if selection.Skipped > 0 {
+			fmt.Fprintf(&b, "; omitted %d obvious low-signal/no-op entries", selection.Skipped)
+		}
+		if selection.FallbackLowSignal {
+			b.WriteString(". Treat the fallback as a note about absent or low-value handoff context, not as primary project context.")
+		} else {
+			b.WriteString(". Most recent selected entry is first.")
+		}
+		for i, entry := range selection.Entries {
 			fmt.Fprintf(&b, "\n\n## Entry %d\n\n", i+1)
 			b.WriteString(formatStartupEntry(entry))
 		}
@@ -551,7 +559,13 @@ func splitNonEmptyLines(value string) []string {
 	return lines
 }
 
-func selectSessionEntries(entries []string, limit int) ([]string, int) {
+type sessionEntrySelection struct {
+	Entries           []string
+	Skipped           int
+	FallbackLowSignal bool
+}
+
+func selectSessionEntries(entries []string, limit int) sessionEntrySelection {
 	selected := make([]string, 0, limit)
 	var skipped int
 	for i := len(entries) - 1; i >= 0 && len(selected) < limit; i-- {
@@ -575,10 +589,10 @@ func selectSessionEntries(entries []string, limit int) ([]string, int) {
 			if skipped > 0 {
 				skipped--
 			}
-			break
+			return sessionEntrySelection{Entries: selected, Skipped: skipped, FallbackLowSignal: true}
 		}
 	}
-	return selected, skipped
+	return sessionEntrySelection{Entries: selected, Skipped: skipped}
 }
 
 func lowSignalJournalEntry(entry string) bool {
