@@ -1,0 +1,82 @@
+version: 2
+
+project_name: threadmark
+
+builds:
+  - id: threadmark
+    main: ./cmd/threadmark
+    binary: threadmark
+    ldflags:
+      - -s -w -X github.com/thinkwright/threadmark/internal/buildinfo.Version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+  - id: threadmarkd
+    main: ./cmd/threadmarkd
+    binary: threadmarkd
+    ldflags:
+      - -s -w -X github.com/thinkwright/threadmark/internal/buildinfo.Version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: default
+    ids:
+      - threadmark
+      - threadmarkd
+    formats:
+      - tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  prerelease: auto
+
+homebrew_casks:
+  - name: threadmark
+    ids:
+      - default
+    repository:
+      owner: thinkwright
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: "https://github.com/thinkwright/threadmark"
+    description: "Local handoff and continuity for Claude Code, Codex, and AI coding agents"
+    license: "MIT"
+    binaries:
+      - threadmark
+      - threadmarkd
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/threadmark"]
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/threadmarkd"]
+          end

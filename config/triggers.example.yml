@@ -1,0 +1,69 @@
+# Threadmark trigger heuristics — defaults for v0.
+#
+# This file is the BUILT-IN DEFAULT shipped with Threadmark. Edit it freely
+# during development; in deployed use, prefer overriding in one of:
+#
+#   ~/.threadmark/triggers.yml                 (per-user override)
+#   <project>/.threadmark/triggers.local.yml   (per-project override; gitignored)
+#
+# The daemon merges: built-in defaults < user override < project override.
+#
+# See HOW_IT_WORKS.md for how triggers feed the reflector through the daemon.
+
+# A checkpoint fires (and the reflector runs) when one of these conditions
+# is met, subject to debounce below.
+triggers:
+  # Idle: no events for this long means the agent has paused; capture now.
+  idle:
+    enabled: true
+    duration: 30m
+
+  # Commit: a git commit was observed in the working directory.
+  commit:
+    enabled: true
+    # Skip commits whose message matches these patterns (WIP/fixup commits
+    # during exploration are usually too small to be salient).
+    skip_message_patterns:
+      - "^WIP"
+      - "^wip"
+      - "^fixup!"
+      - "^squash!"
+
+  # Branch switch: the working directory's current branch changed.
+  branch_switch:
+    enabled: true
+
+  # Pre-compact: the harness is about to compact its context window. This
+  # flushes immediately because the uncompressed working context is about to
+  # be rewritten. Post-compact events rehydrate context; they do not normally
+  # create a second checkpoint.
+  pre_compact:
+    enabled: true
+    immediate: true
+
+  # Stop: the harness session ended (Claude Code Stop event, etc).
+  stop:
+    enabled: true
+
+  # User checkpoint: explicit user request via slash command.
+  user_checkpoint:
+    enabled: true
+
+  # Safety net: every N turns since the last checkpoint, fire even if no
+  # other trigger matched. Catches long uninterrupted streams of work.
+  safety_net:
+    enabled: true
+    every_turns: 50
+
+# Debounce: if multiple triggers fire within this window, produce only one
+# entry. Higher-priority triggers win; ties resolve to the later event.
+debounce:
+  window: 10m
+  priority:
+    - user_checkpoint
+    - pre_compact
+    - stop
+    - branch_switch
+    - commit
+    - idle
+    - safety_net
