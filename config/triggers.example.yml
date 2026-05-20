@@ -10,8 +10,9 @@
 #
 # See HOW_IT_WORKS.md for how triggers feed the reflector through the daemon.
 
-# A checkpoint fires (and the reflector runs) when one of these conditions
-# is met, subject to debounce below.
+# A checkpoint fires (and the reflector runs) when one of these conditions is
+# met. Most triggers are subject to debounce below; handoff-critical triggers
+# are marked immediate.
 triggers:
   # Idle: no events for this long means the agent has paused; capture now.
   idle:
@@ -41,9 +42,12 @@ triggers:
     enabled: true
     immediate: true
 
-  # Stop: the harness session ended (Claude Code Stop event, etc).
+  # Stop: the harness session ended (Claude Code Stop event, etc). This flushes
+  # immediately after substantive work so another agent can start with the
+  # latest handoff context.
   stop:
     enabled: true
+    immediate: true
 
   # User checkpoint: explicit user request via slash command.
   user_checkpoint:

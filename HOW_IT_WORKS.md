@@ -193,7 +193,7 @@ During the window:
 
 The purpose is to avoid several tiny entries for one logical unit of work.
 
-Pre-compaction is different. It fires immediately because the harness is about to rewrite or compress its context. If another trigger is pending, the pre-compaction checkpoint absorbs it into the same source range.
+Session stop and pre-compaction are different. They fire immediately after substantive work. Stop is the handoff boundary when a harness session ends. Pre-compaction is immediate because the harness is about to rewrite or compress its context. If another trigger is pending, the immediate checkpoint absorbs it into the same source range.
 
 ## 8. The Daemon Builds a Redacted Excerpt
 

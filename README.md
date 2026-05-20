@@ -53,9 +53,9 @@ While you work, Threadmark watches Claude Code and Codex lifecycle events:
 prompts, tool calls, edits, commits, stops, and compactions. It keeps
 per-project state, accumulates activity, and suppresses empty lifecycle noise so
 opening and closing an agent does not create fake progress. When a real
-checkpoint appears, such as a stop after substantive work or a pre-compaction
-boundary, it can reflect a best-effort redacted excerpt into a short journal
-entry.
+checkpoint appears, it can reflect a best-effort redacted excerpt into a short
+journal entry. Stop and pre-compaction checkpoints fire immediately after
+substantive work because they are handoff boundaries.
 
 When another agent enters the repo, Threadmark can give it a startup packet with
 a Workspace Snapshot, optional Project Card, and selected recent entries. That

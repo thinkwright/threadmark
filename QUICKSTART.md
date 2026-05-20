@@ -164,7 +164,9 @@ The daemon classifies checkpoint triggers:
 - safety net after many turns
 - pre-compaction event
 
-Most triggers wait through a short debounce window so several related events can become one journal entry. During active work, Threadmark accumulates events and may show a `pending_trigger` in `threadmark status`; that is normal, not a stalled journal. Pre-compaction fires immediately because the harness is about to rewrite its working context.
+Most triggers wait through a short debounce window so several related events can become one journal entry. During active work, Threadmark accumulates events and may show a `pending_trigger` in `threadmark status`; that is normal, not a stalled journal.
+
+Session stop and pre-compaction are handoff-critical boundaries. They fire immediately after substantive work: stop because the agent session has ended, and pre-compaction because the harness is about to rewrite its working context.
 
 Lifecycle-only sessions are suppressed. Starting and exiting an agent without substantive work should not produce a journal entry.
 

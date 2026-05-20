@@ -380,6 +380,16 @@ func (e *Engine) classifyImmediateTrigger(event Event) (*TriggerCandidate, error
 			At:        event.Ts,
 		}, nil
 	}
+	if isStopEvent(event) && e.hasSubstantiveRange() {
+		return &TriggerCandidate{
+			Type:      TriggerStop,
+			Reason:    string(TriggerStop),
+			Priority:  85,
+			Immediate: true,
+			EventID:   event.EventID,
+			At:        event.Ts,
+		}, nil
+	}
 	return nil, nil
 }
 
@@ -389,16 +399,6 @@ func (e *Engine) classifyTrigger(event Event) (*TriggerCandidate, error) {
 			Type:     TriggerUserCheckpoint,
 			Reason:   string(TriggerUserCheckpoint),
 			Priority: 90,
-			EventID:  event.EventID,
-			At:       event.Ts,
-		}, nil
-	}
-
-	if isStopEvent(event) && e.hasSubstantiveRange() {
-		return &TriggerCandidate{
-			Type:     TriggerStop,
-			Reason:   string(TriggerStop),
-			Priority: 85,
 			EventID:  event.EventID,
 			At:       event.Ts,
 		}, nil

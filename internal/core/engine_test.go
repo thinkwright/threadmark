@@ -313,13 +313,16 @@ func TestEngineStopTriggersAfterSubstantiveUserEvent(t *testing.T) {
 	if result.TriggerCandidate == nil || result.TriggerCandidate.Type != TriggerStop {
 		t.Fatalf("trigger candidate = %#v, want stop", result.TriggerCandidate)
 	}
-	if result.TriggerDecision.Kind != TriggerDecisionPending {
-		t.Fatalf("trigger decision = %s, want pending", result.TriggerDecision.Kind)
+	if !result.TriggerCandidate.Immediate {
+		t.Fatalf("trigger candidate immediate = false, want true")
+	}
+	if result.TriggerDecision.Kind != TriggerDecisionFired {
+		t.Fatalf("trigger decision = %s, want fired", result.TriggerDecision.Kind)
 	}
 
-	checkpoint := engine.FlushDue(at(12 * time.Minute))
+	checkpoint := result.Checkpoint
 	if checkpoint == nil {
-		t.Fatal("expected stop checkpoint after debounce")
+		t.Fatal("expected immediate stop checkpoint")
 	}
 	if got, want := checkpoint.SourceRange.First, "evt_user"; got != want {
 		t.Fatalf("source range first = %q, want %q", got, want)
@@ -343,9 +346,9 @@ func TestEngineCheckpointAggregatesSourceMetadata(t *testing.T) {
 		t.Fatalf("trigger candidate = %#v, want stop", result.TriggerCandidate)
 	}
 
-	checkpoint := engine.FlushDue(at(11 * time.Minute))
+	checkpoint := result.Checkpoint
 	if checkpoint == nil {
-		t.Fatal("expected stop checkpoint after debounce")
+		t.Fatal("expected immediate stop checkpoint")
 	}
 	if got, want := checkpoint.FilesTouched, []string{"main.go"}; fmt.Sprint(got) != fmt.Sprint(want) {
 		t.Fatalf("files touched = %#v, want %#v", got, want)
@@ -449,6 +452,36 @@ func TestEnginePreCompactAbsorbsPendingCommit(t *testing.T) {
 		t.Fatalf("source range first = %q, want %q", got, want)
 	}
 	if got, want := result.Checkpoint.SourceRange.Last, "evt_pc"; got != want {
+		t.Fatalf("source range last = %q, want %q", got, want)
+	}
+}
+
+func TestEngineStopAbsorbsPendingCommit(t *testing.T) {
+	engine := newTestEngine()
+	if _, err := engine.Ingest(fileChangeEvent(t, "evt_commit", "abc123", at(0))); err != nil {
+		t.Fatalf("commit ingest: %v", err)
+	}
+
+	result, err := engine.Ingest(textEvent(t, "evt_stop", "transcript-1", at(2*time.Minute), ActorHarness, "stop"))
+	if err != nil {
+		t.Fatalf("stop ingest: %v", err)
+	}
+	if got, want := result.TriggerDecision.Kind, TriggerDecisionFired; got != want {
+		t.Fatalf("decision kind = %s, want fired", got)
+	}
+	if result.TriggerDecision.Replaced == nil || result.TriggerDecision.Replaced.Type != TriggerCommit {
+		t.Fatalf("replaced = %#v, want absorbed commit", result.TriggerDecision.Replaced)
+	}
+	if result.Checkpoint == nil {
+		t.Fatal("expected checkpoint")
+	}
+	if got, want := result.Checkpoint.Trigger.Type, TriggerStop; got != want {
+		t.Fatalf("checkpoint trigger type = %s, want stop", got)
+	}
+	if got, want := result.Checkpoint.SourceRange.First, "evt_commit"; got != want {
+		t.Fatalf("source range first = %q, want %q", got, want)
+	}
+	if got, want := result.Checkpoint.SourceRange.Last, "evt_stop"; got != want {
 		t.Fatalf("source range last = %q, want %q", got, want)
 	}
 }
