@@ -1,0 +1,34 @@
+# Go binaries / build output
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.prof
+/bin/
+/dist/
+
+# Vendored deps (uncomment if vendoring is adopted)
+# vendor/
+
+# Test coverage
+coverage.out
+coverage.html
+
+# Editor / OS
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
+.claude/
+.codex/
+/planning/
+/STATUS.md
+/AGENT_BRIDGE.md
+
+# Per-user local config overrides (built-in defaults live in config/triggers.example.yml;
+# users override in ~/.threadmark/triggers.yml or <project>/.threadmark/triggers.local.yml).
+config/triggers.local.yml
+.threadmark/

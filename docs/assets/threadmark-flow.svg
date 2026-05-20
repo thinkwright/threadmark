@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="390" viewBox="0 0 920 390" role="img" aria-labelledby="title desc">
+  <title id="title">Threadmark runtime flow</title>
+  <desc id="desc">Claude Code and Codex hooks send events to the Threadmark hook bridge, through a Unix socket, into threadmarkd. The daemon runs the core engine, reflector, and journal store. A future SessionStart receives a startup packet.</desc>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+    </marker>
+    <style>
+      text {
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        fill: #111827;
+      }
+      .phase-label {
+        fill: #ffffff;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: .05em;
+      }
+      .node-title {
+        font-size: 17px;
+        font-weight: 760;
+      }
+      .node-body {
+        fill: #4b5563;
+        font-size: 13px;
+      }
+      .node {
+        fill: #ffffff;
+        stroke-width: 2;
+      }
+      .arrow {
+        fill: none;
+        stroke-width: 4;
+        stroke-linecap: square;
+        stroke-linejoin: miter;
+      }
+    </style>
+  </defs>
+
+  <rect x="10" y="10" width="900" height="370" fill="#f8fafc" stroke="#d1d5db"/>
+
+  <rect x="36" y="40" width="848" height="82" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <rect x="36" y="40" width="128" height="82" fill="#2563eb"/>
+  <text class="phase-label" x="100" y="76" text-anchor="middle">CODING</text>
+  <text class="phase-label" x="100" y="95" text-anchor="middle">SESSION</text>
+  <rect class="node" x="190" y="58" width="190" height="46" stroke="#60a5fa"/>
+  <text class="node-title" x="285" y="86" text-anchor="middle">Claude Code / Codex</text>
+  <path class="arrow" d="M 396 81 H 452" stroke="#2563eb" marker-end="url(#arrow-blue)"/>
+  <rect class="node" x="470" y="58" width="172" height="46" stroke="#60a5fa"/>
+  <text class="node-title" x="556" y="86" text-anchor="middle">threadmark hook</text>
+  <path class="arrow" d="M 658 81 H 714" stroke="#2563eb" marker-end="url(#arrow-blue)"/>
+  <rect class="node" x="732" y="58" width="126" height="46" stroke="#60a5fa"/>
+  <text class="node-title" x="795" y="78" text-anchor="middle">Unix socket</text>
+  <text class="node-body" x="795" y="96" text-anchor="middle">daemon.sock</text>
+
+  <path class="arrow" d="M 795 122 V 138" stroke="#2563eb" marker-end="url(#arrow-blue)"/>
+
+  <rect x="36" y="146" width="848" height="120" fill="#fffbeb" stroke="#fbbf24" stroke-width="2"/>
+  <rect x="36" y="146" width="128" height="120" fill="#d97706"/>
+  <text class="phase-label" x="100" y="212" text-anchor="middle">SIDECAR</text>
+  <rect class="node" x="180" y="184" width="126" height="46" stroke="#f59e0b"/>
+  <text class="node-title" x="243" y="212" text-anchor="middle">threadmarkd</text>
+  <path class="arrow" d="M 318 207 H 362" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <rect class="node" x="378" y="174" width="140" height="66" stroke="#f59e0b"/>
+  <text class="node-title" x="448" y="201" text-anchor="middle">core engine</text>
+  <text class="node-body" x="448" y="221" text-anchor="middle">triggers + debounce</text>
+  <path class="arrow" d="M 530 207 H 574" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <rect class="node" x="590" y="174" width="118" height="66" stroke="#f59e0b"/>
+  <text class="node-title" x="649" y="201" text-anchor="middle">reflector</text>
+  <text class="node-body" x="649" y="221" text-anchor="middle">redacted body</text>
+  <path class="arrow" d="M 720 207 H 746" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <rect class="node" x="762" y="174" width="96" height="66" stroke="#f59e0b"/>
+  <text class="node-title" x="810" y="201" text-anchor="middle">journal</text>
+  <text class="node-body" x="810" y="221" text-anchor="middle">store</text>
+
+  <path class="arrow" d="M 810 266 V 284" stroke="#d97706" marker-end="url(#arrow-green)"/>
+
+  <rect x="36" y="292" width="848" height="58" fill="#ecfdf5" stroke="#86efac" stroke-width="2"/>
+  <rect x="36" y="292" width="128" height="58" fill="#16a34a"/>
+  <text class="phase-label" x="100" y="316" text-anchor="middle">FUTURE</text>
+  <text class="phase-label" x="100" y="335" text-anchor="middle">SESSION</text>
+  <rect class="node" x="220" y="303" width="176" height="36" stroke="#4ade80"/>
+  <text class="node-title" x="308" y="326" text-anchor="middle">SessionStart</text>
+  <path class="arrow" d="M 412 321 H 480" stroke="#16a34a" marker-end="url(#arrow-green)"/>
+  <rect class="node" x="498" y="303" width="330" height="36" stroke="#4ade80"/>
+  <text class="node-title" x="663" y="318" text-anchor="middle">startup packet</text>
+  <text class="node-body" x="663" y="334" text-anchor="middle">git snapshot + Project Card + selected entries</text>
+</svg>

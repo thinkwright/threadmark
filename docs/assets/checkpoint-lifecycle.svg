@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360" role="img" aria-labelledby="title desc">
+  <title id="title">Threadmark checkpoint lifecycle</title>
+  <desc id="desc">Work events become neutral events, enter the Threadmark sidecar, accumulate in a memory-only excerpt buffer, become trigger candidates, pass through debounce or immediate handling, and are written as reflected journal entries.</desc>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+    </marker>
+    <style>
+      text {
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        fill: #111827;
+      }
+      .phase-label {
+        fill: #ffffff;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: .05em;
+      }
+      .node-title {
+        font-size: 16px;
+        font-weight: 760;
+      }
+      .node-body {
+        fill: #4b5563;
+        font-size: 12.5px;
+      }
+      .node {
+        fill: #ffffff;
+        stroke-width: 2;
+      }
+      .arrow {
+        fill: none;
+        stroke-width: 4;
+        stroke-linecap: square;
+        stroke-linejoin: miter;
+      }
+    </style>
+  </defs>
+
+  <rect x="10" y="10" width="900" height="340" fill="#f8fafc" stroke="#d1d5db"/>
+
+  <rect x="36" y="38" width="848" height="78" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <rect x="36" y="38" width="132" height="78" fill="#2563eb"/>
+  <text class="phase-label" x="102" y="72" text-anchor="middle">WORK</text>
+  <text class="phase-label" x="102" y="91" text-anchor="middle">EVENTS</text>
+  <rect class="node" x="202" y="55" width="178" height="46" stroke="#60a5fa"/>
+  <text class="node-title" x="291" y="75" text-anchor="middle">Hook event</text>
+  <text class="node-body" x="291" y="94" text-anchor="middle">prompt, tool, git, stop</text>
+  <path class="arrow" d="M 396 78 H 480" stroke="#2563eb" marker-end="url(#arrow-blue)"/>
+  <rect class="node" x="500" y="55" width="176" height="46" stroke="#60a5fa"/>
+  <text class="node-title" x="588" y="75" text-anchor="middle">Neutral event</text>
+  <text class="node-body" x="588" y="94" text-anchor="middle">shared schema</text>
+
+  <path class="arrow" d="M 588 116 V 137" stroke="#2563eb" marker-end="url(#arrow-blue)"/>
+
+  <rect x="36" y="146" width="848" height="126" fill="#fffbeb" stroke="#fbbf24" stroke-width="2"/>
+  <rect x="36" y="146" width="132" height="126" fill="#d97706"/>
+  <text class="phase-label" x="102" y="203" text-anchor="middle">SIDECAR</text>
+  <text class="phase-label" x="102" y="222" text-anchor="middle">DECISION</text>
+  <rect class="node" x="190" y="177" width="150" height="62" stroke="#f59e0b"/>
+  <text class="node-title" x="265" y="200" text-anchor="middle">Excerpt buffer</text>
+  <text class="node-body" x="265" y="219" text-anchor="middle">redacted summaries</text>
+  <text class="node-body" x="265" y="235" text-anchor="middle">memory only</text>
+  <path class="arrow" d="M 354 208 H 392" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <rect class="node" x="410" y="177" width="150" height="62" stroke="#f59e0b"/>
+  <text class="node-title" x="485" y="200" text-anchor="middle">Trigger candidate</text>
+  <text class="node-body" x="485" y="219" text-anchor="middle">commit, stop, idle</text>
+  <text class="node-body" x="485" y="235" text-anchor="middle">branch, pre-compact</text>
+  <path class="arrow" d="M 574 208 H 612" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <rect class="node" x="630" y="177" width="208" height="62" stroke="#f59e0b"/>
+  <text class="node-title" x="734" y="200" text-anchor="middle">Debounce or immediate</text>
+  <text class="node-body" x="734" y="219" text-anchor="middle">ordinary triggers wait up to 10m</text>
+  <text class="node-body" x="734" y="235" text-anchor="middle">pre-compact fires now</text>
+
+  <path class="arrow" d="M 734 272 V 291" stroke="#d97706" marker-end="url(#arrow-green)"/>
+
+  <rect x="36" y="300" width="848" height="38" fill="#ecfdf5" stroke="#86efac" stroke-width="2"/>
+  <rect x="36" y="300" width="132" height="38" fill="#16a34a"/>
+  <text class="phase-label" x="102" y="324" text-anchor="middle">JOURNAL</text>
+  <rect class="node" x="302" y="305" width="130" height="28" stroke="#4ade80"/>
+  <text class="node-title" x="367" y="324" text-anchor="middle">Reflector</text>
+  <path class="arrow" d="M 446 319 H 508" stroke="#16a34a" marker-end="url(#arrow-green)"/>
+  <rect class="node" x="526" y="305" width="172" height="28" stroke="#4ade80"/>
+  <text class="node-title" x="612" y="324" text-anchor="middle">Journal entry</text>
+</svg>

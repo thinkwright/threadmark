@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="320" viewBox="0 0 920 320" role="img" aria-labelledby="title desc">
+  <title id="title">Threadmark startup packet layers</title>
+  <desc id="desc">A SessionStart startup packet combines a Workspace Snapshot, optional Project Card, and selected journal entries before handing context to a new Claude Code or Codex session.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <style>
+      text {
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        fill: #111827;
+      }
+      .label {
+        fill: #ffffff;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: .05em;
+      }
+      .node-title {
+        font-size: 16px;
+        font-weight: 760;
+      }
+      .node-body {
+        fill: #4b5563;
+        font-size: 12.5px;
+      }
+      .node {
+        fill: #ffffff;
+        stroke-width: 2;
+      }
+      .arrow {
+        fill: none;
+        stroke: #475569;
+        stroke-width: 4;
+        stroke-linecap: square;
+        stroke-linejoin: miter;
+      }
+    </style>
+  </defs>
+
+  <rect x="10" y="10" width="900" height="300" fill="#f8fafc" stroke="#d1d5db"/>
+
+  <rect x="36" y="38" width="236" height="58" fill="#eff6ff" stroke="#60a5fa" stroke-width="2"/>
+  <rect x="36" y="38" width="54" height="58" fill="#2563eb"/>
+  <text class="label" x="63" y="72" text-anchor="middle">1</text>
+  <text class="node-title" x="181" y="61" text-anchor="middle">Workspace Snapshot</text>
+  <text class="node-body" x="181" y="80" text-anchor="middle">git root, branch, HEAD, status</text>
+
+  <rect x="36" y="124" width="236" height="58" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <rect x="36" y="124" width="54" height="58" fill="#d97706"/>
+  <text class="label" x="63" y="158" text-anchor="middle">2</text>
+  <text class="node-title" x="181" y="147" text-anchor="middle">Project Card</text>
+  <text class="node-body" x="181" y="166" text-anchor="middle">optional durable repo context</text>
+
+  <rect x="36" y="210" width="236" height="58" fill="#ecfdf5" stroke="#4ade80" stroke-width="2"/>
+  <rect x="36" y="210" width="54" height="58" fill="#16a34a"/>
+  <text class="label" x="63" y="244" text-anchor="middle">3</text>
+  <text class="node-title" x="181" y="233" text-anchor="middle">Selected Entries</text>
+  <text class="node-body" x="181" y="252" text-anchor="middle">perspectival journal context</text>
+
+  <path class="arrow" d="M 288 67 H 372" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M 288 153 H 372" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M 288 239 H 372" marker-end="url(#arrow)"/>
+
+  <rect class="node" x="392" y="88" width="210" height="126" stroke="#64748b"/>
+  <text class="node-title" x="497" y="128" text-anchor="middle">SessionStart</text>
+  <text class="node-title" x="497" y="150" text-anchor="middle">startup packet</text>
+  <text class="node-body" x="497" y="178" text-anchor="middle">ordered orientation bundle</text>
+
+  <path class="arrow" d="M 620 151 H 688" marker-end="url(#arrow)"/>
+
+  <rect class="node" x="708" y="105" width="156" height="92" stroke="#64748b"/>
+  <text class="node-title" x="786" y="135" text-anchor="middle">Arriving session</text>
+  <text class="node-body" x="786" y="158" text-anchor="middle">Claude Code</text>
+  <text class="node-body" x="786" y="176" text-anchor="middle">or Codex</text>
+</svg>

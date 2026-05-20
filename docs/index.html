@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#090a08">
+    <title>Threadmark - Continuity sidecar for Claude Code and Codex</title>
+    <meta
+      name="description"
+      content="Threadmark is a local continuity sidecar that gives Claude Code and Codex compact startup context when developers move between them in the same repository."
+    >
+    <link rel="canonical" href="https://thinkwright.github.io/threadmark/">
+    <meta property="og:title" content="Threadmark - Continuity sidecar for Claude Code and Codex">
+    <meta
+      property="og:description"
+      content="Threadmark is a local continuity sidecar that gives Claude Code and Codex compact startup context when developers move between them in the same repository."
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thinkwright.github.io/threadmark/">
+    <meta property="og:image" content="https://thinkwright.github.io/threadmark/assets/threadmark-og-1200x630.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Threadmark landing page with local continuity sidecar examples.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Threadmark - Continuity sidecar for Claude Code and Codex">
+    <meta
+      name="twitter:description"
+      content="Threadmark is a local continuity sidecar that gives Claude Code and Codex compact startup context when developers move between them in the same repository."
+    >
+    <meta name="twitter:image" content="https://thinkwright.github.io/threadmark/assets/threadmark-og-1200x630.png">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D4W9X12FWM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-D4W9X12FWM');
+    </script>
+    <link rel="stylesheet" href="./assets/site.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" aria-label="Site header">
+      <a class="wordmark" href="./" aria-label="Threadmark home">
+        <span class="wordmark-mark" aria-hidden="true"></span>
+        <span>Threadmark</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#privacy">Privacy statement</a>
+        <a href="https://github.com/thinkwright/threadmark#readme">Docs</a>
+        <a href="https://github.com/thinkwright/threadmark">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <canvas class="thread-field" data-thread-field aria-hidden="true"></canvas>
+        <div class="hero-scrim" aria-hidden="true"></div>
+        <div class="hero-shell">
+          <div class="hero-content">
+            <p class="eyebrow">Open source / local first</p>
+            <h1 id="hero-title">Threadmark</h1>
+            <p class="hero-copy">
+              Threadmark is a local continuity sidecar for developers who move
+              between <span class="brand-claude">Claude Code</span> and
+              <span class="brand-codex">Codex</span> in the same repository.
+            </p>
+            <div class="hero-actions" aria-label="Primary actions">
+              <a class="button button-primary" href="https://github.com/thinkwright/threadmark">
+                GitHub
+              </a>
+              <a class="button button-secondary" href="https://github.com/thinkwright/threadmark/blob/main/QUICKSTART.md">
+                Quickstart
+              </a>
+            </div>
+            <p class="ambient-note">
+              Activate a repo once. After that, Threadmark stays ambient while you work.
+            </p>
+          </div>
+
+          <div class="demo-grid" aria-label="Representative Threadmark output">
+            <figure class="terminal terminal-wide">
+              <figcaption>install</figcaption>
+              <pre><code><span class="prompt">$</span> <span class="term-command">brew install</span> <span class="term-flag">--cask</span> thinkwright/tap/threadmark
+<span class="term-dim">==&gt;</span> Linking Binary <span class="term-binary">'threadmark'</span> to <span class="term-path">'/opt/homebrew/bin/threadmark'</span>
+<span class="term-dim">==&gt;</span> Linking Binary <span class="term-binary">'threadmarkd'</span> to <span class="term-path">'/opt/homebrew/bin/threadmarkd'</span>
+<span class="term-success">threadmark was successfully installed</span></code></pre>
+            </figure>
+            <figure class="terminal">
+              <figcaption>activate a repo</figcaption>
+              <pre><code><span class="prompt">$</span> <span class="term-command">cd</span> <span class="term-path">~/code/my-project</span>
+<span class="prompt">$</span> <span class="term-command">threadmark activate</span>
+<span class="term-success">installed Claude Code hooks</span>
+<span class="term-success">installed Codex hooks</span>
+<span class="term-info">daemon ready</span>
+<span class="term-success">project activation complete</span></code></pre>
+            </figure>
+            <figure class="terminal">
+              <figcaption>new agent session</figcaption>
+              <pre class="session-pre"><code class="session-code"><span class="term-line term-prompt-line"><span class="prompt">›</span> <span class="term-command">What do you know about this project?</span></span><span class="term-line term-blank"></span><span class="term-line"><span class="term-info">• SessionStart hook (completed)</span></span><span class="term-line term-indent"><span class="term-threadmark">Threadmark startup packet</span></span><span class="term-line term-indent"><span class="term-dim">branch:</span> <span class="term-success">main</span></span><span class="term-line term-indent"><span class="term-success">Selected 2 recent journal entries</span></span><span class="term-line term-indent"><span class="term-threadmark">Entry 19: completed refactor of v2 power-flow router; tests pass</span></span></code></pre>
+            </figure>
+          </div>
+
+          <p class="plain-note">
+            Threadmark watches harness lifecycle events like prompts, tool use,
+            file changes, commits, session stops, and compaction boundaries,
+            then writes short journal entries when the work reaches a useful
+            checkpoint. The next session gets a compact startup packet with
+            current workspace facts and recent handoff context. Neither
+            semantic memory nor a conversation log, it is a small local layer
+            for dropping into a repo without finding the right previous session
+            or making a new agent rediscover what the other one was doing.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <section id="privacy" class="privacy-overlay" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+      <a class="privacy-backdrop" href="./" aria-label="Close privacy statement"></a>
+      <article class="privacy-card">
+        <div class="privacy-card-header">
+          <p class="eyebrow">Privacy statement</p>
+          <a class="privacy-close" href="./" aria-label="Close privacy statement">Close</a>
+        </div>
+        <h2 id="privacy-title">What Threadmark tries not to write down.</h2>
+        <p>
+          Threadmark journals are short orientation notes stored locally under
+          <code>~/.threadmark</code>. They are not intended to be transcripts,
+          raw hook logs, or tool-output archives.
+        </p>
+        <ul class="privacy-list">
+          <li>Raw harness transcripts are not persisted into the journal.</li>
+          <li>Raw hook payloads are not stored as journal material.</li>
+          <li>Raw tool inputs and full raw tool outputs are not written to the journal.</li>
+          <li>Tool activity is summarized before reflection; tool arguments are omitted from checkpoint excerpts.</li>
+          <li>Redaction runs before the reflector call and journal write.</li>
+          <li>Current redaction covers common GitHub tokens, OpenAI-style keys, Anthropic keys, bearer tokens, AWS access-key-shaped IDs, environment-style secret assignments, structured secret fields, npm auth tokens, and private-key blocks.</li>
+          <li>Transient checkpoint excerpts are held in memory and dropped on daemon restart if the source excerpt is gone.</li>
+          <li>Journal directories are created with private local permissions, and journal files are written with private local file permissions.</li>
+        </ul>
+        <p class="privacy-caveat">
+          Redaction is best effort, not a security boundary. It can miss
+          uncommon secret formats, encoded data, screenshots, generated files,
+          arbitrary prose, or lossy tool summaries. For sensitive sessions, use
+          no-journal mode.
+        </p>
+      </article>
+    </section>
+
+    <footer class="site-footer">
+      <span>Threadmark</span>
+      <a href="https://github.com/thinkwright/threadmark/blob/main/LICENSE">MIT License</a>
+    </footer>
+
+    <script src="./assets/thread-field.js"></script>
+  </body>
+</html>
