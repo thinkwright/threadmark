@@ -6,4 +6,4 @@ package buildinfo
 // github.com/thinkwright/threadmark/cmd/threadmark@vX.Y.Z` reports the release
 // version. GoReleaser also stamps this variable with the tag-derived version
 // when building release archives.
-var Version = "0.1.0-dev"
+var Version = "0.1.0"
