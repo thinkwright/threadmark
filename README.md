@@ -73,7 +73,7 @@ state.
 
 ## Limits
 
-- Threadmark is distributed as Go commands; install with Homebrew, `go install`, or build from source.
+- Threadmark is distributed as two command-line binaries, `threadmark` and `threadmarkd`; install with Homebrew, `go install`, or build from source.
 - The reflector backend is the Claude CLI (`claude -p`) in convenience or bare mode.
 - Journal mode sends a best-effort redacted checkpoint excerpt to the configured reflector model; use `--no-journal` for sensitive sessions.
 - Redaction is not a security guarantee.
