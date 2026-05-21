@@ -35,6 +35,9 @@ jobs:
       - name: Check shell syntax
         run: git ls-files '*.sh' | xargs -r bash -n
 
+      - name: Check whitespace
+        run: git diff --check
+
       - name: Vet
         run: go vet ./...
 
