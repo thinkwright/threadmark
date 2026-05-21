@@ -174,6 +174,26 @@ func TestExecRunnerMarksReflectorActive(t *testing.T) {
 	}
 }
 
+func TestExecRunnerRedactsStderrOnFailure(t *testing.T) {
+	_, err := ExecRunner{}.Run(context.Background(), "sh", []string{
+		"-c",
+		"printf 'reflector failed with CUSTOM_SECRET=not-for-logs and API_KEY=test-api-key-value' >&2; exit 7",
+	})
+	if err == nil {
+		t.Fatal("Run returned nil error, want failure")
+	}
+
+	errorText := err.Error()
+	for _, leaked := range []string{"not-for-logs", "test-api-key-value"} {
+		if strings.Contains(errorText, leaked) {
+			t.Fatalf("error leaked %q: %s", leaked, errorText)
+		}
+	}
+	if !strings.Contains(errorText, "CUSTOM_SECRET=<redacted>") || !strings.Contains(errorText, "API_KEY=<redacted>") {
+		t.Fatalf("error did not preserve redacted stderr context: %s", errorText)
+	}
+}
+
 type fakeRunner struct {
 	command string
 	args    []string
