@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -252,6 +253,65 @@ func TestServerReportsInvalidLines(t *testing.T) {
 		}
 	case <-time.After(time.Second):
 		t.Fatal("timed out waiting for rejected event")
+	}
+
+	cancel()
+	if err := <-errCh; err != nil {
+		t.Fatalf("ListenAndServe returned error after cancellation: %v", err)
+	}
+}
+
+func TestServerRejectsOversizedEventLines(t *testing.T) {
+	socketPath := filepath.Join(t.TempDir(), "daemon.sock")
+	rejected := make(chan error, 1)
+	received := make(chan core.Event, 1)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	server := Server{
+		SocketPath: socketPath,
+		Handler: HandlerFunc(func(_ context.Context, event core.Event) error {
+			received <- event
+			return nil
+		}),
+		ErrorHandler: func(err error) {
+			rejected <- err
+		},
+	}
+
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- server.ListenAndServe(ctx)
+	}()
+	waitForSocket(t, socketPath)
+
+	conn, err := net.Dial("unix", socketPath)
+	if err != nil {
+		t.Fatalf("dial socket: %v", err)
+	}
+	oversizedLine := strings.Repeat("a", MaxEventBytes+1) + "\n"
+	if _, err := conn.Write([]byte(oversizedLine)); err != nil {
+		t.Fatalf("write oversized event: %v", err)
+	}
+	_ = conn.Close()
+
+	select {
+	case err := <-rejected:
+		if err == nil {
+			t.Fatal("error handler received nil")
+		}
+		if !strings.Contains(err.Error(), "event line exceeds") {
+			t.Fatalf("rejected error = %v, want event size error", err)
+		}
+	case <-time.After(time.Second):
+		t.Fatal("timed out waiting for oversized event rejection")
+	}
+
+	select {
+	case event := <-received:
+		t.Fatalf("handler received oversized event: %s", event.EventID)
+	default:
 	}
 
 	cancel()

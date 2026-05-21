@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net"
 	"os"
 	"path/filepath"
@@ -22,6 +21,7 @@ const (
 	SocketDirMode  os.FileMode = 0o700
 	SocketFileMode os.FileMode = 0o600
 	DefaultSocket              = "daemon.sock"
+	MaxEventBytes              = 1 << 20
 )
 
 var sendRetryDelays = []time.Duration{
@@ -95,20 +95,23 @@ func (s Server) ListenAndServe(ctx context.Context) error {
 func (s Server) handleConn(ctx context.Context, conn net.Conn) {
 	defer conn.Close()
 
-	reader := bufio.NewReader(conn)
-	for {
-		line, err := reader.ReadBytes('\n')
-		if len(bytes.TrimSpace(line)) > 0 {
-			if err := s.handleLine(ctx, line); err != nil {
-				s.handleError(err)
-			}
+	scanner := bufio.NewScanner(conn)
+	scanner.Buffer(make([]byte, 0, 64*1024), MaxEventBytes)
+	for scanner.Scan() {
+		line := scanner.Bytes()
+		if len(bytes.TrimSpace(line)) == 0 {
+			continue
 		}
-		if errors.Is(err, io.EOF) {
+		if err := s.handleLine(ctx, line); err != nil {
+			s.handleError(err)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		if strings.Contains(err.Error(), "token too long") {
+			s.handleError(fmt.Errorf("read event: event line exceeds %d bytes", MaxEventBytes))
 			return
 		}
-		if err != nil {
-			return
-		}
+		s.handleError(fmt.Errorf("read event: %w", err))
 	}
 }
 
