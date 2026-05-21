@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 func argvHasFlagValue(args []string, name, value string) bool {
 	for idx := 0; idx < len(args)-1; idx++ {
@@ -15,4 +18,15 @@ func argvHasFlagValue(args []string, name, value string) bool {
 		}
 	}
 	return false
+}
+
+func commandLineHasFlagValue(commandLine, name, value string) bool {
+	boundary := `(?:^|\s)`
+	end := `(?:\s|$)`
+	separate := regexp.MustCompile(boundary + regexp.QuoteMeta(name) + `\s+` + regexp.QuoteMeta(value) + end)
+	if separate.MatchString(commandLine) {
+		return true
+	}
+	equals := regexp.MustCompile(boundary + regexp.QuoteMeta(name+"="+value) + end)
+	return equals.MatchString(commandLine)
 }

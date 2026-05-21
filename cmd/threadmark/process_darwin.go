@@ -34,8 +34,3 @@ func verifyDaemonProcess(pid int, root, socketPath string) error {
 	}
 	return nil
 }
-
-func commandLineHasFlagValue(commandLine, name, value string) bool {
-	return strings.Contains(commandLine, name+" "+value) ||
-		strings.Contains(commandLine, name+"="+value)
-}
