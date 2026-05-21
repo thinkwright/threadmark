@@ -451,8 +451,7 @@ threadmark daemon restart
 
 ## Limits
 
-- Threadmark is distributed as Go commands; install with Homebrew, `go install`,
-  or build from source.
+- Threadmark is distributed as two command-line binaries, `threadmark` and `threadmarkd`; install with Homebrew, `go install`, or build from source.
 - The reflector backend is Claude CLI only.
 - Journal mode sends a best-effort redacted checkpoint excerpt to the configured reflector model; launch the agent with `THREADMARK_NO_JOURNAL=true` for sensitive sessions.
 - Codex hooks require explicit `/hooks` trust for project-local hooks.
