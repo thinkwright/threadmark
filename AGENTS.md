@@ -3,7 +3,7 @@
 Repository guidance for AI coding assistants and maintainers working on
 Threadmark.
 
-**Last updated:** 2026-05-19
+**Last updated:** 2026-05-21
 
 ## 1. Project Contract
 
@@ -130,6 +130,13 @@ Before editing:
 git status --short --branch
 git log --oneline -10
 ```
+
+Use pull requests for repository changes instead of committing directly to
+`main`. Threadmark has a soft Hermes review loop that scans open PRs and
+privately reports on new PR head SHAs. It is advisory only: Hermes does not post
+to GitHub, approve, request changes, merge, commit, or push. The PR flow is
+still required because the review loop only sees open PRs. Maintainer-directed
+release or repository operations may still happen directly on `main`.
 
 Prefer focused changes that match existing package boundaries. Use `rg` for
 search. Respect `.gitignore`; generated artifacts, build output, and
