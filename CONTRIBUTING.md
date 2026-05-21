@@ -54,20 +54,38 @@ bin/threadmark install
 threadmark daemon restart
 ```
 
+## Pull Request Flow
+
+Use pull requests for normal repository changes. Direct commits to `main` should
+be reserved for maintainer-directed release or repository operations.
+
+Threadmark has a soft Hermes review loop for open pull requests. Hermes scans
+open PRs periodically and privately reviews PR head SHAs it has not seen before.
+If a PR gets new commits, Hermes should review the new head on the next scan. If
+no open PRs need review, it stays quiet.
+
+Hermes is advisory only. It does not post to GitHub, approve, request changes,
+merge, commit, or push. Maintainers and contributors remain responsible for
+deciding what to change and when to merge. The PR flow is still important
+because it gives the review loop something to inspect.
+
 ## Release Preparation
 
 Releases are prepared locally before the GitHub release workflow runs. The
 workflow is triggered by pushing a `v*` tag, so the source tree must already be
 stamped and tagged correctly before that push.
 
-The source-stamped version lives in one file:
+The source-stamped version lives in:
 
 ```text
 internal/buildinfo/version.go
+docs/index.html
 ```
 
-Both `threadmark` and `threadmarkd` read that value. Journal frontmatter also
-records that value when the daemon writes an entry.
+Both `threadmark` and `threadmarkd` read the value from
+`internal/buildinfo/version.go`. Journal frontmatter also records that value
+when the daemon writes an entry. The GitHub Pages landing page uses the
+`docs/index.html` stamp for its latest-release badge.
 
 GoReleaser stamps the same variable when it builds release archives:
 
@@ -86,8 +104,9 @@ scripts/prepare-release.sh v0.1.0
 ```
 
 The script requires a clean worktree on `main`, stamps
-`internal/buildinfo/version.go`, runs the release checks, commits the stamp, and
-creates an annotated local tag. It does not push.
+`internal/buildinfo/version.go` and the GitHub Pages release badge, runs the
+release checks, commits the stamp, and creates an annotated local tag. It does
+not push.
 
 Push in this order:
 
