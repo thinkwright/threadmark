@@ -68,7 +68,8 @@ func (ExecRunner) Run(ctx context.Context, command string, args []string) (strin
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
-		return "", fmt.Errorf("run reflector command: %w: %s", err, truncate(stderr.String(), 2048))
+		redactedStderr := truncate(Redact(stderr.String()), 2048)
+		return "", fmt.Errorf("run reflector command: %w: %s", err, redactedStderr)
 	}
 	return stdout.String(), nil
 }
