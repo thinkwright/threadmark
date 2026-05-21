@@ -8,6 +8,7 @@ usage: scripts/prepare-release.sh vX.Y.Z
 Prepare a Threadmark release locally:
   - require a clean worktree on main
   - stamp internal/buildinfo/version.go
+  - stamp the GitHub Pages release badge
   - run release validation checks
   - commit the version stamp
   - create an annotated git tag
@@ -60,17 +61,34 @@ fi
 
 version_file="internal/buildinfo/version.go"
 [[ -f "$version_file" ]] || fail "missing $version_file"
+landing_file="docs/index.html"
+[[ -f "$landing_file" ]] || fail "missing $landing_file"
 
 if ! grep -qE '^var Version = "[^"]+"$' "$version_file"; then
   fail "$version_file does not contain the expected Version assignment"
+fi
+if ! grep -qE '<strong data-threadmark-version>v[^<]+</strong>' "$landing_file"; then
+  fail "$landing_file does not contain the expected release badge version marker"
+fi
+if ! grep -qE 'aria-label="Latest Threadmark release v[^"]+"' "$landing_file"; then
+  fail "$landing_file does not contain the expected release badge aria label"
 fi
 
 sed -i.bak -E "s/^var Version = \"[^\"]+\"$/var Version = \"${version}\"/" "$version_file"
 rm -f "$version_file.bak"
 gofmt -w "$version_file"
+sed -i.bak -E "s#<strong data-threadmark-version>v[^<]+</strong>#<strong data-threadmark-version>${tag}</strong>#" "$landing_file"
+sed -i.bak -E "s#aria-label=\"Latest Threadmark release v[^\"]+\"#aria-label=\"Latest Threadmark release ${tag}\"#" "$landing_file"
+rm -f "$landing_file.bak"
 
 if ! grep -qx "var Version = \"${version}\"" "$version_file"; then
   fail "failed to stamp $version_file"
+fi
+if ! grep -q "<strong data-threadmark-version>${tag}</strong>" "$landing_file"; then
+  fail "failed to stamp $landing_file release badge"
+fi
+if ! grep -q "aria-label=\"Latest Threadmark release ${tag}\"" "$landing_file"; then
+  fail "failed to stamp $landing_file release badge aria label"
 fi
 
 if git diff --quiet -- "$version_file"; then
@@ -84,7 +102,7 @@ go vet ./...
 git diff --check
 git ls-files '*.sh' | xargs -r bash -n
 
-git add "$version_file"
+git add "$version_file" "$landing_file"
 git commit -m "chore: release $tag"
 git tag -a "$tag" -m "Threadmark $tag"
 
