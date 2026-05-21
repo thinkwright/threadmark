@@ -67,15 +67,15 @@ mattered, and what should be checked before moving again?
 
 You still keep control. `threadmark doctor` and `threadmark status` explain what
 the sidecar sees, daemon lifecycle commands are available for troubleshooting
-and upgrades, `--no-journal` supports testing or sensitive sessions, and project
-disable/enable plus purge commands let you stop or remove local Threadmark
-state.
+and upgrades, `THREADMARK_NO_JOURNAL=true` supports testing or sensitive sessions,
+and project disable/enable plus purge commands let you stop or remove local
+Threadmark state.
 
 ## Limits
 
 - Threadmark is distributed as two command-line binaries, `threadmark` and `threadmarkd`; install with Homebrew, `go install`, or build from source.
 - The reflector backend is the Claude CLI (`claude -p`) in convenience or bare mode.
-- Journal mode sends a best-effort redacted checkpoint excerpt to the configured reflector model; use `--no-journal` for sensitive sessions.
+- Journal mode sends a best-effort redacted checkpoint excerpt to the configured reflector model; launch the agent with `THREADMARK_NO_JOURNAL=true` for sensitive sessions.
 - Redaction is not a security guarantee.
 - OpenCode and Pi adapters are not included.
 - Threadmark does not sync journals across machines.
